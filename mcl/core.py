@@ -2,7 +2,6 @@ from collections import Counter
 from pathlib import Path
 
 import click
-import git
 import libcst as cst
 import tabulate
 from libcst._nodes.statement import ImportFrom
