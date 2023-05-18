@@ -11,7 +11,7 @@ python libraries in a target directory
 
 # Setup
 setup(
-    name="mcil",
+    name="mfi",
     version=VERSION,
     author="Axis (blankRiot96)",
     email="blankRiot96@gmail.com",
