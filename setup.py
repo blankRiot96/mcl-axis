@@ -11,14 +11,14 @@ python libraries in a target directory
 
 # Setup
 setup(
-    name="mfi",
+    name="mcl-axis",
     version=VERSION,
     author="Axis (blankRiot96)",
     email="blankRiot96@gmail.com",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
-    install_requires=["click"],
+    install_requires=["click", "tabulate", "libcst"],
     python_requires=">=3.11",
     keywords=["cli", "most common libraries"],
     classifiers=[
