@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 # py -m build
 # twine upload dist/*
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 DESCRIPTION = "A tool to find the most common libraries used"
 LONG_DESCRIPTION = """
 A tool to find the most commonly imported
