@@ -8,9 +8,9 @@ from libcst._nodes.statement import ImportFrom
 
 
 class Visitor(cst.CSTVisitor):
-    def __init__(self, files: list[str]) -> None:
+    def __init__(self, user_defined_modules: set[str]) -> None:
         super().__init__()
-        self.files = files
+        self.user_defined_modules = user_defined_modules
         self.count = {}
 
     def recursive_value(self, node) -> str:
@@ -26,18 +26,19 @@ class Visitor(cst.CSTVisitor):
 
     def visit_Import(self, node: cst.CSTNode):
         for alias in node.names:
-            if alias.name.value in self.files:
+            package = self.recursive_value(alias.name.value)
+            if package in self.user_defined_modules:
                 continue
 
-            package = self.recursive_value(alias.name.value)
             self.gain_count(package)
 
     def visit_ImportFrom(self, node: ImportFrom) -> bool | None:
         if not hasattr(node.module, "value"):
             return
-        if node.module.value in self.files:
-            return
         package = self.recursive_value(node.module.value)
+
+        if package in self.user_defined_modules:
+            return
         self.gain_count(package)
 
 
@@ -64,16 +65,19 @@ def main():
         for file in current_directory.rglob("*.py")
         if not is_ignored_folder(file, ignored_folders)
     ]
-    package_modules = [
-        file.parent for file in files if file.name in ("__main__.py", "__init__.py")
-    ]
+    user_defined_modules = {
+        str(file.parent.stem)
+        for file in files
+        if file.name in ("__main__.py", "__init__.py")
+    }
+    user_defined_modules.update({file.stem for file in files})
     counter = Counter()
     for file in files:
         try:
             node = cst.parse_module(file.read_text())
         except UnicodeDecodeError:
             continue
-        visitor = Visitor([file.stem for file in files] + package_modules)
+        visitor = Visitor(user_defined_modules)
         node.visit(visitor)
         counter.update(visitor.count)
 
